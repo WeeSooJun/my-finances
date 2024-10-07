@@ -1,52 +1,77 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
+// import "./App.css";a
 import { invoke } from "@tauri-apps/api/core";
-import "./App.css";
+import { useState } from "react";
+import Main from "./Main";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+
+// interface FormElements extends HTMLFormControlsCollection {
+//   password: HTMLInputElement;
+// }
+
+// interface PasswordFormElement extends HTMLFormElement {
+//   readonly elements: FormElements;
+// }
+
+// interface SingleTarget {
+//   value: string;
+// }
+
+// interface FormEvent {
+//   target: SingleTarget[];
+// }
+
+const queryClient = new QueryClient();
 
 function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
+  const [hasPasswordBeenSet, setHasPasswordBeenSet] = useState(true);
+  const [showPasswordError, setShowPasswordError] = useState<string | null>(null);
+  const [showEnterPassword, setShowEnterPassword] = useState(true);
 
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-    setGreetMsg(await invoke("greet", { name }));
+  invoke("is_database_initialized").then((res: any) => setHasPasswordBeenSet(res as boolean));
+
+  async function setPassphrase(passphrase: string) {
+    const result = await invoke("set_database_passphrase", { passphrase });
+    if (!result) {
+      setShowPasswordError("Wrong password, please try again.");
+      return;
+    }
+    setShowEnterPassword(false);
   }
-
   return (
-    <div className="container">
-      <h1>Welcome to Tauri!</h1>
+    <QueryClientProvider client={queryClient}>
+      {showEnterPassword && (
+        <>
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();
 
-      <div className="row">
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
-
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <button type="submit">Greet</button>
-      </form>
-
-      <p>{greetMsg}</p>
-    </div>
+              const passwordInput = document.querySelector("#password") as HTMLInputElement;
+              const confirmPasswordInput = document.querySelector("#confirm-password") as HTMLInputElement;
+              if (!hasPasswordBeenSet && passwordInput.value !== confirmPasswordInput.value) {
+                setShowPasswordError("The passwords do not match!");
+                return;
+              }
+              await setPassphrase(passwordInput.value);
+            }}
+          >
+            <div className="grid grid-cols-3 items-center">
+              Please {hasPasswordBeenSet ? "enter" : "set"} your password
+              <input id="password" type="password" />
+              <button type="submit">Enter</button>
+            </div>
+            {!hasPasswordBeenSet && (
+              <div className="grid grid-cols-3 items-center">
+                Confirm your password
+                <input id="confirm-password" type="password" />
+              </div>
+            )}
+          </form>
+          {showPasswordError && <div style={{ color: "red" }}>{showPasswordError}</div>}
+        </>
+      )}
+      {!showEnterPassword && <Main />}
+    </QueryClientProvider>
   );
 }
 
