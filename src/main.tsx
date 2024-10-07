@@ -1,4 +1,11 @@
-import { addNewBank, addNewCategory, addNewTransactionType, getTypesForField, getTransactions, processXlsx } from "./api";
+import {
+  addNewBank,
+  addNewCategory,
+  addNewTransactionType,
+  getTypesForField,
+  getTransactions,
+  processXlsx,
+} from "./api";
 import dayjs, { Dayjs } from "dayjs";
 import { open } from "@tauri-apps/plugin-dialog";
 import Table from "./Table";

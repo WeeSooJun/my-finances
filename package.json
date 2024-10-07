@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "format": "prettier --write ./src"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.59.0",
@@ -25,6 +26,7 @@
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
+    "prettier": "3.3.3",
     "tailwindcss": "^3.4.13",
     "typescript": "^5.2.2",
     "vite": "^5.3.1"

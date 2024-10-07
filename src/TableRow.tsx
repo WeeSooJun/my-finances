@@ -7,19 +7,32 @@ interface TableRowProps {
   setEditTransactionId?: Dispatch<SetStateAction<number | null>>;
   transactionInput?: Transaction;
   onDeleteClick?: (id: number) => Promise<void>;
-  setDate:  Dispatch<SetStateAction<Dayjs>>;
-  setName:  Dispatch<SetStateAction<string>>;
-  setCategory:  Dispatch<SetStateAction<string>>;
-  setTransactionTypes:  Dispatch<SetStateAction<string[]>>;
-  setBank:  Dispatch<SetStateAction<string>>;
-  setAmount:  Dispatch<SetStateAction<number | null>>;
+  setDate: Dispatch<SetStateAction<Dayjs>>;
+  setName: Dispatch<SetStateAction<string>>;
+  setCategory: Dispatch<SetStateAction<string>>;
+  setTransactionTypes: Dispatch<SetStateAction<string[]>>;
+  setBank: Dispatch<SetStateAction<string>>;
+  setAmount: Dispatch<SetStateAction<number | null>>;
   categoryList: string[];
   transactionTypeOptionsList: string[];
   banksList: string[];
 }
 
-
-const TableRow = ({ editTransactionId, setEditTransactionId, transactionInput, onDeleteClick, setDate, setName, setCategory, setTransactionTypes, setBank, setAmount, categoryList, transactionTypeOptionsList, banksList }: TableRowProps) => {
+const TableRow = ({
+  editTransactionId,
+  setEditTransactionId,
+  transactionInput,
+  onDeleteClick,
+  setDate,
+  setName,
+  setCategory,
+  setTransactionTypes,
+  setBank,
+  setAmount,
+  categoryList,
+  transactionTypeOptionsList,
+  banksList,
+}: TableRowProps) => {
   const emptyStringArray: string[] = [];
 
   const transaction = transactionInput
@@ -34,57 +47,64 @@ const TableRow = ({ editTransactionId, setEditTransactionId, transactionInput, o
         amount: null,
       };
 
-
   // console.log(!editTransactionId);
 
   return (
     <>
-      {transactionInput !== undefined && editTransactionId! !== transaction.id && setEditTransactionId && onDeleteClick && (
-        <tr
-          key={transactionInput.id ?transactionInput.id : 0}
-          // classList={{
-          //   "hover-row": true,
-          // }}
-          // onMouseEnter={() => setIsHovered(true)}
-          // onMouseLeave={() => setIsHovered(false)}
-          onDoubleClick={() => {
-            // hate this but SolidJS still has not type guard
-            // already checked on top
-            setEditTransactionId!(transactionInput!.id);
-            setDate(transaction.date);
-            setName(transaction.name);
-            setCategory(transaction.category);
-            setTransactionTypes(transaction.transactionTypes);
-            setBank(transaction.bank);
-            setAmount(transaction.amount);
-          }}
-          tabIndex={0}
-          onKeyDown={(event) => {
-            if (event.key === "Escape") {
+      {transactionInput !== undefined &&
+        editTransactionId! !== transaction.id &&
+        setEditTransactionId &&
+        onDeleteClick && (
+          <tr
+            key={transactionInput.id ? transactionInput.id : 0}
+            // classList={{
+            //   "hover-row": true,
+            // }}
+            // onMouseEnter={() => setIsHovered(true)}
+            // onMouseLeave={() => setIsHovered(false)}
+            onDoubleClick={() => {
               // hate this but SolidJS still has not type guard
               // already checked on top
-              setEditTransactionId!(null);
-            }
-          }}
-        >
-          <td>{transaction.date.format("DD/MM/YYYY")}</td>
-          <td>{transaction.name}</td>
-          <td>{transaction.category}</td>
-          <td>{transaction.transactionTypes.reduce((prev, curr) => `${prev}, ${curr}`)}</td>
-          <td>{transaction.bank}</td>
-          <td>{transaction.amount}</td>
-          <td className="border-none">
-            <button
-              type="button"
-              // classList={{ "opacity-0": !isHovered, "opacity-1": isHovered }}
-              onClick={() => onDeleteClick!(transaction.id)}
-            >
-              X
-            </button>
-          </td>
-        </tr>
-      )}
-      {(transactionInput === undefined || editTransactionId! === transaction.id) && (
+              setEditTransactionId!(transactionInput!.id);
+              setDate(transaction.date);
+              setName(transaction.name);
+              setCategory(transaction.category);
+              setTransactionTypes(transaction.transactionTypes);
+              setBank(transaction.bank);
+              setAmount(transaction.amount);
+            }}
+            tabIndex={0}
+            onKeyDown={(event) => {
+              if (event.key === "Escape") {
+                // hate this but SolidJS still has not type guard
+                // already checked on top
+                setEditTransactionId!(null);
+              }
+            }}
+          >
+            <td>{transaction.date.format("DD/MM/YYYY")}</td>
+            <td>{transaction.name}</td>
+            <td>{transaction.category}</td>
+            <td>
+              {transaction.transactionTypes.reduce(
+                (prev, curr) => `${prev}, ${curr}`,
+              )}
+            </td>
+            <td>{transaction.bank}</td>
+            <td>{transaction.amount}</td>
+            <td className="border-none">
+              <button
+                type="button"
+                // classList={{ "opacity-0": !isHovered, "opacity-1": isHovered }}
+                onClick={() => onDeleteClick!(transaction.id)}
+              >
+                X
+              </button>
+            </td>
+          </tr>
+        )}
+      {(transactionInput === undefined ||
+        editTransactionId! === transaction.id) && (
         <tr
           tabIndex={0}
           onKeyDown={(event) => {
@@ -96,13 +116,24 @@ const TableRow = ({ editTransactionId, setEditTransactionId, transactionInput, o
           }}
         >
           <td>
-            <input type="date" value={(transaction.date as Dayjs).format("YYYY-MM-DD")} onChange={(e) => setDate(dayjs(e.target.value))} />
+            <input
+              type="date"
+              value={(transaction.date as Dayjs).format("YYYY-MM-DD")}
+              onChange={(e) => setDate(dayjs(e.target.value))}
+            />
           </td>
           <td>
-            <input type="string" value={transaction.name} onChange={(e) => setName(e.target.value)} />
+            <input
+              type="string"
+              value={transaction.name}
+              onChange={(e) => setName(e.target.value)}
+            />
           </td>
           <td>
-            <select value={transaction.category} onChange={(e) => setCategory(e.target.value)}>
+            <select
+              value={transaction.category}
+              onChange={(e) => setCategory(e.target.value)}
+            >
               {categoryList.map(
                 (
                   val, // TODO: deal with loading states later
@@ -124,9 +155,13 @@ const TableRow = ({ editTransactionId, setEditTransactionId, transactionInput, o
                       checked={transaction.transactionTypes.includes(val)}
                       onChange={(e) =>
                         e.target.checked
-                          ? setTransactionTypes((prev) => prev.concat([e.target.value]))
+                          ? setTransactionTypes((prev) =>
+                              prev.concat([e.target.value]),
+                            )
                           : setTransactionTypes((prev) => {
-                              return prev.filter((ele) => e.target.value !== ele);
+                              return prev.filter(
+                                (ele) => e.target.value !== ele,
+                              );
                             })
                       }
                     />
@@ -137,7 +172,10 @@ const TableRow = ({ editTransactionId, setEditTransactionId, transactionInput, o
             </div>
           </td>
           <td>
-            <select value={transaction.bank} onChange={(e) => setBank(e.target.value)}>
+            <select
+              value={transaction.bank}
+              onChange={(e) => setBank(e.target.value)}
+            >
               {banksList.map(
                 (
                   val, // TODO: deal with loading states later
@@ -152,7 +190,11 @@ const TableRow = ({ editTransactionId, setEditTransactionId, transactionInput, o
               onChange={(e) => {
                 setAmount(parseFloat(e.target.value));
               }}
-              value={transaction.amount !== null ? (transaction.amount as number) : ""}
+              value={
+                transaction.amount !== null
+                  ? (transaction.amount as number)
+                  : ""
+              }
             />
           </td>
         </tr>

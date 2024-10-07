@@ -4,7 +4,6 @@ import { useState } from "react";
 import Main from "./Main";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-
 // interface FormElements extends HTMLFormControlsCollection {
 //   password: HTMLInputElement;
 // }
@@ -25,10 +24,14 @@ const queryClient = new QueryClient();
 
 function App() {
   const [hasPasswordBeenSet, setHasPasswordBeenSet] = useState(true);
-  const [showPasswordError, setShowPasswordError] = useState<string | null>(null);
+  const [showPasswordError, setShowPasswordError] = useState<string | null>(
+    null,
+  );
   const [showEnterPassword, setShowEnterPassword] = useState(true);
 
-  invoke("is_database_initialized").then((res: any) => setHasPasswordBeenSet(res as boolean));
+  invoke("is_database_initialized").then((res: any) =>
+    setHasPasswordBeenSet(res as boolean),
+  );
 
   async function setPassphrase(passphrase: string) {
     const result = await invoke("set_database_passphrase", { passphrase });
@@ -46,9 +49,16 @@ function App() {
             onSubmit={async (e) => {
               e.preventDefault();
 
-              const passwordInput = document.querySelector("#password") as HTMLInputElement;
-              const confirmPasswordInput = document.querySelector("#confirm-password") as HTMLInputElement;
-              if (!hasPasswordBeenSet && passwordInput.value !== confirmPasswordInput.value) {
+              const passwordInput = document.querySelector(
+                "#password",
+              ) as HTMLInputElement;
+              const confirmPasswordInput = document.querySelector(
+                "#confirm-password",
+              ) as HTMLInputElement;
+              if (
+                !hasPasswordBeenSet &&
+                passwordInput.value !== confirmPasswordInput.value
+              ) {
                 setShowPasswordError("The passwords do not match!");
                 return;
               }
@@ -67,7 +77,9 @@ function App() {
               </div>
             )}
           </form>
-          {showPasswordError && <div style={{ color: "red" }}>{showPasswordError}</div>}
+          {showPasswordError && (
+            <div style={{ color: "red" }}>{showPasswordError}</div>
+          )}
         </>
       )}
       {!showEnterPassword && <Main />}

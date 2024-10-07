@@ -1,6 +1,12 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import { NewTransaction, Transaction } from "./Main";
-import { addNewTransaction, deleteTransaction, editTransaction, getTransactions, getTypesForField } from "./api";
+import {
+  addNewTransaction,
+  deleteTransaction,
+  editTransaction,
+  getTransactions,
+  getTypesForField,
+} from "./api";
 import dayjs, { Dayjs } from "dayjs";
 import TableRow from "./TableRow";
 import { useQuery } from "@tanstack/react-query";
@@ -11,7 +17,9 @@ interface TableProps {
 }
 
 const Table = ({ showNewEntry, setShowNewEntry }: TableProps) => {
-  const [editTransactionId, setEditTransactionId] = useState<number | null>(null);
+  const [editTransactionId, setEditTransactionId] = useState<number | null>(
+    null,
+  );
   const [date, setDate] = useState<Dayjs>(dayjs());
   const [name, setName] = useState<string>("");
   const [category, setCategory] = useState<string>("");
@@ -117,30 +125,39 @@ const Table = ({ showNewEntry, setShowNewEntry }: TableProps) => {
                 setBank,
                 setAmount,
                 categoryList: categoriesQueryResult.data!,
-                transactionTypeOptionsList: transactionTypeOptionsQueryResult.data!,
-                banksList: banksQueryResult.data!
+                transactionTypeOptionsList:
+                  transactionTypeOptionsQueryResult.data!,
+                banksList: banksQueryResult.data!,
               })}
-            {
-              transactionsQueryResult.data?.map((txn) =>
-                TableRow({
-                  editTransactionId,
-                  setEditTransactionId,
-                  transactionInput: txn,
-                  onDeleteClick,
-                  setDate,
-                  setName,
-                  setCategory,
-                  setTransactionTypes,
-                  setBank,
-                  setAmount,
-                  categoryList: categoriesQueryResult.data!,
-                  transactionTypeOptionsList: transactionTypeOptionsQueryResult.data!,
-                  banksList: banksQueryResult.data!
-                }))
-            }
+            {transactionsQueryResult.data?.map((txn) =>
+              TableRow({
+                editTransactionId,
+                setEditTransactionId,
+                transactionInput: txn,
+                onDeleteClick,
+                setDate,
+                setName,
+                setCategory,
+                setTransactionTypes,
+                setBank,
+                setAmount,
+                categoryList: categoriesQueryResult.data!,
+                transactionTypeOptionsList:
+                  transactionTypeOptionsQueryResult.data!,
+                banksList: banksQueryResult.data!,
+              }),
+            )}
           </tbody>
         </table>
-        <button style={{ visibility: "hidden", width: 0, height: 0, position: "absolute" }} type="submit" />{" "}
+        <button
+          style={{
+            visibility: "hidden",
+            width: 0,
+            height: 0,
+            position: "absolute",
+          }}
+          type="submit"
+        />{" "}
         {/* I need this here in order for the enter button to work */}
       </form>
       <button>Load More</button>

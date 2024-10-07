@@ -35,7 +35,9 @@ const NewFieldType = ({ fieldName, fieldSubmit }: NewFieldTypeProps) => {
         <form
           onSubmit={async (e) => {
             e.preventDefault();
-            const newTypeInput = document.querySelector(`#newTypeInput-${fieldName}`) as HTMLInputElement;
+            const newTypeInput = document.querySelector(
+              `#newTypeInput-${fieldName}`,
+            ) as HTMLInputElement;
             await fieldSubmit(newTypeInput.value);
             setShowNewTypeInput(false);
           }}
