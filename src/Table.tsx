@@ -28,8 +28,6 @@ const Table = ({ showNewEntry, setShowNewEntry }: TableProps) => {
   const [transactionTypes, setTransactionTypes] = useState<string[]>([]);
   const [bank, setBank] = useState<string>("");
   const [amount, setAmount] = useState<number | null>(null);
-  // Seems to be some slowness, maybe can explore context
-  const [hoverId, setHoverId] = useState<number | null>(null);
   // const [showDeleteModal, setDeleteModal] = createSignal<boolean>(false);
 
   const transactionsQueryResult = useQuery({
@@ -123,41 +121,42 @@ const Table = ({ showNewEntry, setShowNewEntry }: TableProps) => {
             </tr>
           </thead>
           <tbody>
-            {showNewEntry &&
-              TableRow({
-                setDate,
-                setName,
-                setCategory,
-                setTransactionTypes,
-                setBank,
-                setAmount,
-                categoryList: categoriesQueryResult.data!,
-                transactionTypeOptionsList:
-                  transactionTypeOptionsQueryResult.data!,
-                banksList: banksQueryResult.data!,
-                hoverId,
-                setHoverId,
-              })}
-            {transactionsQueryResult.data?.map((txn) =>
-              TableRow({
-                editTransactionId,
-                setEditTransactionId,
-                transactionInput: txn,
-                onDeleteClick,
-                setDate,
-                setName,
-                setCategory,
-                setTransactionTypes,
-                setBank,
-                setAmount,
-                categoryList: categoriesQueryResult.data!,
-                transactionTypeOptionsList:
-                  transactionTypeOptionsQueryResult.data!,
-                banksList: banksQueryResult.data!,
-                hoverId,
-                setHoverId,
-              })
+            {showNewEntry && (
+              <TableRow
+                {...{
+                  setDate,
+                  setName,
+                  setCategory,
+                  setTransactionTypes,
+                  setBank,
+                  setAmount,
+                  categoryList: categoriesQueryResult.data!,
+                  transactionTypeOptionsList:
+                    transactionTypeOptionsQueryResult.data!,
+                  banksList: banksQueryResult.data!,
+                }}
+              />
             )}
+            {transactionsQueryResult.data?.map((txn) => (
+              <TableRow
+                {...{
+                  editTransactionId,
+                  setEditTransactionId,
+                  transactionInput: txn,
+                  onDeleteClick,
+                  setDate,
+                  setName,
+                  setCategory,
+                  setTransactionTypes,
+                  setBank,
+                  setAmount,
+                  categoryList: categoriesQueryResult.data!,
+                  transactionTypeOptionsList:
+                    transactionTypeOptionsQueryResult.data!,
+                  banksList: banksQueryResult.data!,
+                }}
+              />
+            ))}
           </tbody>
         </table>
         <button

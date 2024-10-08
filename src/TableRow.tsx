@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Transaction } from "./Main";
 import dayjs, { Dayjs } from "dayjs";
 
@@ -16,8 +16,6 @@ interface TableRowProps {
   categoryList: string[];
   transactionTypeOptionsList: string[];
   banksList: string[];
-  hoverId: number | null;
-  setHoverId: Dispatch<SetStateAction<number | null>>;
 }
 
 const TableRow = ({
@@ -34,9 +32,8 @@ const TableRow = ({
   categoryList,
   transactionTypeOptionsList,
   banksList,
-  hoverId,
-  setHoverId,
 }: TableRowProps) => {
+  const [isHover, setIsHover] = useState<boolean>(false);
   const emptyStringArray: string[] = [];
 
   const transaction = transactionInput
@@ -62,8 +59,8 @@ const TableRow = ({
             // classList={{
             //   "hover-row": true,
             // }}
-            onMouseEnter={() => setHoverId(transactionInput.id)}
-            onMouseLeave={() => setHoverId(null)}
+            onMouseEnter={() => setIsHover(true)}
+            onMouseLeave={() => setIsHover(false)}
             onDoubleClick={() => {
               // hate this but SolidJS still has not type guard
               // already checked on top
@@ -97,7 +94,7 @@ const TableRow = ({
             <td className="border-none">
               <button
                 type="button"
-                className={`${hoverId === transactionInput.id ? "opacity-1" : "opacity-0"}`}
+                className={`${isHover ? "opacity-1" : "opacity-0"}`}
                 onClick={() => onDeleteClick!(transaction.id)}
               >
                 X
