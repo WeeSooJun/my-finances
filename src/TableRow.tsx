@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Transaction } from "./Main";
 import dayjs, { Dayjs } from "dayjs";
 
@@ -16,6 +16,8 @@ interface TableRowProps {
   categoryList: string[];
   transactionTypeOptionsList: string[];
   banksList: string[];
+  hoverId: number | null;
+  setHoverId: Dispatch<SetStateAction<number | null>>;
 }
 
 const TableRow = ({
@@ -32,6 +34,8 @@ const TableRow = ({
   categoryList,
   transactionTypeOptionsList,
   banksList,
+  hoverId,
+  setHoverId,
 }: TableRowProps) => {
   const emptyStringArray: string[] = [];
 
@@ -47,8 +51,6 @@ const TableRow = ({
         amount: null,
       };
 
-  // console.log(!editTransactionId);
-
   return (
     <>
       {transactionInput !== undefined &&
@@ -60,8 +62,8 @@ const TableRow = ({
             // classList={{
             //   "hover-row": true,
             // }}
-            // onMouseEnter={() => setIsHovered(true)}
-            // onMouseLeave={() => setIsHovered(false)}
+            onMouseEnter={() => setHoverId(transactionInput.id)}
+            onMouseLeave={() => setHoverId(null)}
             onDoubleClick={() => {
               // hate this but SolidJS still has not type guard
               // already checked on top
@@ -87,7 +89,7 @@ const TableRow = ({
             <td>{transaction.category}</td>
             <td>
               {transaction.transactionTypes.reduce(
-                (prev, curr) => `${prev}, ${curr}`,
+                (prev, curr) => `${prev}, ${curr}`
               )}
             </td>
             <td>{transaction.bank}</td>
@@ -95,7 +97,7 @@ const TableRow = ({
             <td className="border-none">
               <button
                 type="button"
-                // classList={{ "opacity-0": !isHovered, "opacity-1": isHovered }}
+                className={`${hoverId === transactionInput.id ? "opacity-1" : "opacity-0"}`}
                 onClick={() => onDeleteClick!(transaction.id)}
               >
                 X
@@ -136,10 +138,10 @@ const TableRow = ({
             >
               {categoryList.map(
                 (
-                  val, // TODO: deal with loading states later
+                  val // TODO: deal with loading states later
                 ) => (
                   <option>{val}</option>
-                ),
+                )
               )}
             </select>
           </td>
@@ -156,11 +158,11 @@ const TableRow = ({
                       onChange={(e) =>
                         e.target.checked
                           ? setTransactionTypes((prev) =>
-                              prev.concat([e.target.value]),
+                              prev.concat([e.target.value])
                             )
                           : setTransactionTypes((prev) => {
                               return prev.filter(
-                                (ele) => e.target.value !== ele,
+                                (ele) => e.target.value !== ele
                               );
                             })
                       }
@@ -178,10 +180,10 @@ const TableRow = ({
             >
               {banksList.map(
                 (
-                  val, // TODO: deal with loading states later
+                  val // TODO: deal with loading states later
                 ) => (
                   <option>{val}</option>
-                ),
+                )
               )}
             </select>
           </td>

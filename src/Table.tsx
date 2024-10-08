@@ -16,9 +16,11 @@ interface TableProps {
   setShowNewEntry: Dispatch<SetStateAction<boolean>>;
 }
 
+const MAX_INITIAL_ITEMS = 1000;
+
 const Table = ({ showNewEntry, setShowNewEntry }: TableProps) => {
   const [editTransactionId, setEditTransactionId] = useState<number | null>(
-    null,
+    null
   );
   const [date, setDate] = useState<Dayjs>(dayjs());
   const [name, setName] = useState<string>("");
@@ -26,12 +28,17 @@ const Table = ({ showNewEntry, setShowNewEntry }: TableProps) => {
   const [transactionTypes, setTransactionTypes] = useState<string[]>([]);
   const [bank, setBank] = useState<string>("");
   const [amount, setAmount] = useState<number | null>(null);
+  // Seems to be some slowness, maybe can explore context
+  const [hoverId, setHoverId] = useState<number | null>(null);
   // const [showDeleteModal, setDeleteModal] = createSignal<boolean>(false);
 
   const transactionsQueryResult = useQuery({
     queryKey: ["transactionsData"],
     queryFn: async () => {
-      const response = await getTransactions(10, dayjs().format("YYYY-MM-DD"));
+      const response = await getTransactions(
+        MAX_INITIAL_ITEMS,
+        dayjs().format("YYYY-MM-DD")
+      );
       return response;
     },
   });
@@ -128,6 +135,8 @@ const Table = ({ showNewEntry, setShowNewEntry }: TableProps) => {
                 transactionTypeOptionsList:
                   transactionTypeOptionsQueryResult.data!,
                 banksList: banksQueryResult.data!,
+                hoverId,
+                setHoverId,
               })}
             {transactionsQueryResult.data?.map((txn) =>
               TableRow({
@@ -145,7 +154,9 @@ const Table = ({ showNewEntry, setShowNewEntry }: TableProps) => {
                 transactionTypeOptionsList:
                   transactionTypeOptionsQueryResult.data!,
                 banksList: banksQueryResult.data!,
-              }),
+                hoverId,
+                setHoverId,
+              })
             )}
           </tbody>
         </table>
