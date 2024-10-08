@@ -16,7 +16,7 @@ interface TableProps {
   setShowNewEntry: Dispatch<SetStateAction<boolean>>;
 }
 
-const MAX_INITIAL_ITEMS = 1000;
+const MAX_INITIAL_ITEMS = 3000;
 
 const Table = ({ showNewEntry, setShowNewEntry }: TableProps) => {
   const [editTransactionId, setEditTransactionId] = useState<number | null>(
