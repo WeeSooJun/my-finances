@@ -19,7 +19,7 @@ function convertCamelToSnake(obj: any): any {
     if (obj.hasOwnProperty(key)) {
       const snakeCaseKey = key.replace(
         /[A-Z]/g,
-        (match) => `_${match.toLowerCase()}`,
+        (match) => `_${match.toLowerCase()}`
       );
       result[snakeCaseKey] = convertCamelToSnake(obj[key]);
     }
@@ -38,13 +38,13 @@ type TransactionRequest = {
 };
 
 async function addNewCategory(
-  newCategory: string | undefined,
+  newCategory: string | undefined
 ): Promise<boolean> {
   return await invoke("add_new_category", { newCategory });
 }
 
 async function addNewTransactionType(
-  newType: string | undefined,
+  newType: string | undefined
 ): Promise<boolean> {
   return await invoke("add_new_transaction_type", { newType });
 }
@@ -54,7 +54,7 @@ async function addNewBank(newBank: string | undefined): Promise<boolean> {
 }
 
 async function addNewTransaction(
-  newTransaction: NewTransaction,
+  newTransaction: NewTransaction
 ): Promise<boolean> {
   const transactionRequest: TransactionRequest = {
     ...convertCamelToSnake(newTransaction),
@@ -93,7 +93,7 @@ type RawTransaction = {
 
 async function getTransactions(
   recordsPerPage: number,
-  key: string,
+  key: string
 ): Promise<Transaction[]> {
   const result: RawTransaction[] = await invoke("get_transactions", {
     recordsPerPage,
