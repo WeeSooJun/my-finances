@@ -8,7 +8,6 @@ import {
 import { NewTransaction, Transaction } from "./Main";
 import dayjs, { Dayjs } from "dayjs";
 import { addNewTransaction, editTransaction } from "./api";
-import { QueryObserverResult, RefetchOptions } from "@tanstack/react-query";
 
 export interface TableRowProps {
   transactionInput?: Transaction;
@@ -78,12 +77,12 @@ const TableRow = ({
     };
   }, [handleKeyPress]);
 
-  console.log(
-    "test tablerow id" +
-      transaction.id +
-      " " +
-      dayjs().format("YYYY-MM-DDTHH:mm:ss")
-  );
+  // console.log(
+  //   "test tablerow id" +
+  //     transaction.id +
+  //     " " +
+  //     dayjs().format("YYYY-MM-DDTHH:mm:ss")
+  // );
   return (
     <>
       {!isEdit && transactionInput !== undefined && (
@@ -123,19 +122,7 @@ const TableRow = ({
         <tr
           tabIndex={0}
           onKeyDown={async (event) => {
-            if (event.key === "Escape") {
-              // implementation of new and edit row is a bit convoluted now as
-              // exit mechanism for edit is ESC but for create it's cancel button
-              setIsEdit(false);
-              setName(transaction.name);
-              setDate(transaction.date);
-              setCategory(transaction.category);
-              setTransactionTypes(transaction.transactionTypes);
-              setAmount(
-                transaction.amount ? transaction.amount.toString() : null
-              );
-              setShowNewEntry && setShowNewEntry(false);
-            } else if (event.key === "Enter") {
+            if (event.key === "Enter") {
               if (transaction.id === 0) {
                 const newTransaction: NewTransaction = {
                   date: date!,
