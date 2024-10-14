@@ -5,13 +5,15 @@ import {
   getTypesForField,
   getTransactions,
   processXlsx,
+  deleteTransaction,
 } from "./api";
 import dayjs, { Dayjs } from "dayjs";
 import { open } from "@tauri-apps/plugin-dialog";
 import Table from "./Table";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
 import NewFieldType from "./NewFieldType";
+import TableRow, { TableRowProps } from "./TableRow";
+import NewRowToggle from "./NewRowToggle";
 
 export type Transaction = {
   id: number;
@@ -26,6 +28,8 @@ export type Transaction = {
 type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
 export type NewTransaction = PartialBy<Transaction, "id">;
+
+const MAX_INITIAL_ITEMS = 10;
 
 const Main = () => {
   const categoriesQueryResult = useQuery({
@@ -52,15 +56,24 @@ const Main = () => {
   const transactionsQueryResult = useQuery({
     queryKey: ["transactionsData"],
     queryFn: async () => {
-      const response = await getTransactions(10, dayjs().format("YYYY-MM-DD"));
+      const response = await getTransactions(
+        MAX_INITIAL_ITEMS,
+        dayjs().format("YYYY-MM-DD"),
+      );
       return response;
     },
   });
+  const onDeleteClick = async (id: number) => {
+    // display popup to confirm delete
 
-  const [showNewEntry, setShowNewEntry] = useState(false);
-  // const [transactions, setTransactions] = createSignal<Transaction[]>([]);
+    await onDeleteSubmit(id);
+  };
 
-  // getTransactions().then((transactions) => setTransactions(transactions));
+  const onDeleteSubmit = async (id: number) => {
+    await deleteTransaction(id);
+    await transactionsQueryResult.refetch();
+  };
+
   return (
     <div className="container">
       <h1>My Finances!</h1>
@@ -109,7 +122,7 @@ const Main = () => {
         >
           Import .xlsx
         </button>
-        <button
+        {/* <button
           onClick={async () => {
             setShowNewEntry((current) => !current);
             await categoriesQueryResult.refetch();
@@ -119,18 +132,40 @@ const Main = () => {
         >
           {showNewEntry && "Cancel"}
           {!showNewEntry && "Add New Entry"}
-        </button>
+        </button> */}
       </div>
       <br />
-      <Table
-        showNewEntry={showNewEntry}
-        setShowNewEntry={setShowNewEntry}
-        // transactions={transactionsQueryResult.data!}
-        // transactionTypesOptions={transactionTypeOptionsQueryResult.data!} // TODO: handle loading states later
-        // categories={categoriesQueryResult.data!} // TODO: handle loading states later
-        // banks={banksQueryResult.data!} // TODO: handle loading states later
-        // transactionsQueryResult={transactionsQueryResult}
-      />
+      <Table>
+        <NewRowToggle
+          tableRow={(props: Partial<TableRowProps>) => (
+            <TableRow
+              {...{
+                categoryList: categoriesQueryResult.data!,
+                transactionTypeOptionsList:
+                  transactionTypeOptionsQueryResult.data!,
+                banksList: banksQueryResult.data!,
+                refetchTransactions: transactionsQueryResult.refetch,
+                onDeleteClick,
+              }}
+              {...props}
+            />
+          )}
+        />
+        {transactionsQueryResult.data?.map((txn) => (
+          <TableRow
+            key={txn.id}
+            {...{
+              transactionInput: txn,
+              categoryList: categoriesQueryResult.data!,
+              transactionTypeOptionsList:
+                transactionTypeOptionsQueryResult.data!,
+              banksList: banksQueryResult.data!,
+              refetchTransactions: transactionsQueryResult.refetch,
+              onDeleteClick,
+            }}
+          />
+        ))}
+      </Table>
     </div>
   );
 };
