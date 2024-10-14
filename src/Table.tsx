@@ -26,6 +26,13 @@ const Table = ({ children }: TableProps) => {
             </tr>
           </thead>
           <tbody>{children}</tbody>
+          <tfoot>
+            <tr>
+              <td colSpan={6}>
+                <button className="w-full">Load More</button>
+              </td>
+            </tr>
+          </tfoot>
         </table>
         <button
           style={{
@@ -38,7 +45,6 @@ const Table = ({ children }: TableProps) => {
         />{" "}
         {/* I need this here in order for the enter button to work */}
       </form>
-      <button>Load More</button>
     </>
   );
 };
