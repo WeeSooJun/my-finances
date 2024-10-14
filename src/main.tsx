@@ -58,7 +58,7 @@ const Main = () => {
     queryFn: async () => {
       const response = await getTransactions(
         MAX_INITIAL_ITEMS,
-        dayjs().format("YYYY-MM-DD"),
+        dayjs().format("YYYY-MM-DD")
       );
       return response;
     },
@@ -71,6 +71,10 @@ const Main = () => {
 
   const onDeleteSubmit = async (id: number) => {
     await deleteTransaction(id);
+    await transactionsQueryResult.refetch();
+  };
+
+  const onTransactionSubmit = async () => {
     await transactionsQueryResult.refetch();
   };
 
@@ -122,17 +126,6 @@ const Main = () => {
         >
           Import .xlsx
         </button>
-        {/* <button
-          onClick={async () => {
-            setShowNewEntry((current) => !current);
-            await categoriesQueryResult.refetch();
-            await transactionTypeOptionsQueryResult.refetch();
-            await banksQueryResult.refetch();
-          }}
-        >
-          {showNewEntry && "Cancel"}
-          {!showNewEntry && "Add New Entry"}
-        </button> */}
       </div>
       <br />
       <Table>
@@ -144,7 +137,7 @@ const Main = () => {
                 transactionTypeOptionsList:
                   transactionTypeOptionsQueryResult.data!,
                 banksList: banksQueryResult.data!,
-                refetchTransactions: transactionsQueryResult.refetch,
+                onTransactionSubmit,
                 onDeleteClick,
               }}
               {...props}
@@ -160,7 +153,7 @@ const Main = () => {
               transactionTypeOptionsList:
                 transactionTypeOptionsQueryResult.data!,
               banksList: banksQueryResult.data!,
-              refetchTransactions: transactionsQueryResult.refetch,
+              onTransactionSubmit,
               onDeleteClick,
             }}
           />

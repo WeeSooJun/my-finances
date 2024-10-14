@@ -18,9 +18,7 @@ export interface TableRowProps {
   banksList: string[];
   showNewEntry?: boolean;
   setShowNewEntry?: Dispatch<SetStateAction<boolean>>;
-  refetchTransactions: (
-    options?: RefetchOptions,
-  ) => Promise<QueryObserverResult<Transaction[], Error>>;
+  onTransactionSubmit: () => Promise<void>;
 }
 
 const TableRow = ({
@@ -31,7 +29,7 @@ const TableRow = ({
   banksList,
   showNewEntry,
   setShowNewEntry,
-  refetchTransactions,
+  onTransactionSubmit,
 }: TableRowProps) => {
   const emptyStringArray: string[] = [];
   const transaction = transactionInput
@@ -49,11 +47,11 @@ const TableRow = ({
   const [name, setName] = useState<string>(transaction.name);
   const [category, setCategory] = useState<string>(transaction.category);
   const [transactionTypes, setTransactionTypes] = useState<string[]>(
-    transaction.transactionTypes,
+    transaction.transactionTypes
   );
   const [bank, setBank] = useState<string>(transaction.bank);
   const [amount, setAmount] = useState<string | null>(
-    transaction.amount ? transaction.amount.toString() : null,
+    transaction.amount ? transaction.amount.toString() : null
   );
   const [isHover, setIsHover] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
@@ -84,7 +82,7 @@ const TableRow = ({
     "test tablerow id" +
       transaction.id +
       " " +
-      dayjs().format("YYYY-MM-DDTHH:mm:ss"),
+      dayjs().format("YYYY-MM-DDTHH:mm:ss")
   );
   return (
     <>
@@ -134,7 +132,7 @@ const TableRow = ({
               setCategory(transaction.category);
               setTransactionTypes(transaction.transactionTypes);
               setAmount(
-                transaction.amount ? transaction.amount.toString() : null,
+                transaction.amount ? transaction.amount.toString() : null
               );
               setShowNewEntry && setShowNewEntry(false);
             } else if (event.key === "Enter") {
@@ -162,7 +160,7 @@ const TableRow = ({
                 await editTransaction(transactionToEdit);
                 setIsEdit(false);
               }
-              refetchTransactions();
+              onTransactionSubmit();
             }
           }}
         >
@@ -187,10 +185,10 @@ const TableRow = ({
             >
               {categoryList.map(
                 (
-                  val, // TODO: deal with loading states later
+                  val // TODO: deal with loading states later
                 ) => (
                   <option key={val}>{val}</option>
-                ),
+                )
               )}
             </select>
           </td>
@@ -207,11 +205,11 @@ const TableRow = ({
                       onChange={(e) =>
                         e.target.checked
                           ? setTransactionTypes((prev) =>
-                              prev.concat([e.target.value]),
+                              prev.concat([e.target.value])
                             )
                           : setTransactionTypes((prev) => {
                               return prev.filter(
-                                (ele) => e.target.value !== ele,
+                                (ele) => e.target.value !== ele
                               );
                             })
                       }
@@ -226,10 +224,10 @@ const TableRow = ({
             <select value={bank} onChange={(e) => setBank(e.target.value)}>
               {banksList.map(
                 (
-                  val, // TODO: deal with loading states later
+                  val // TODO: deal with loading states later
                 ) => (
                   <option key={val}>{val}</option>
-                ),
+                )
               )}
             </select>
           </td>

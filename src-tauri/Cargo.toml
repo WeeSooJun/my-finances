@@ -25,3 +25,4 @@ serde_json = "1"
 rusqlite = { version = "0.32.1", features = ["bundled-sqlcipher", "chrono"] }
 calamine = "0.25.0"
 chrono = "0.4.38"
+tauri-plugin-dialog = "2"
