@@ -87,6 +87,7 @@ const TableRow = ({
     <>
       {!isEdit && transactionInput !== undefined && (
         <tr
+          className="h-14"
           key={transactionInput.id ? transactionInput.id : 0}
           onMouseEnter={() => setIsHover(true)}
           onMouseLeave={() => setIsHover(false)}
@@ -110,7 +111,11 @@ const TableRow = ({
           <td className="border-none">
             <button
               type="button"
-              className={`${isHover ? "opacity-1" : "opacity-0"}`}
+              // className="opacity-1"
+              className={
+                // "rounded-lg border-solid border-transparent py-2.5 px-5" +
+                `${isHover ? "opacity-1" : "opacity-0"}`
+              }
               onClick={() => onDeleteClick!(transaction.id)}
             >
               X

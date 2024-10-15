@@ -79,7 +79,7 @@ const Main = () => {
   };
 
   return (
-    <div className="container">
+    <div className="flex flex-col justify-center text-center pt-10">
       <h1>My Finances!</h1>
       <div>
         <NewFieldType

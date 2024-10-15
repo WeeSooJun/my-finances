@@ -7,7 +7,7 @@ const Table = ({ children }: TableProps) => {
   return (
     <>
       <form
-        className="row"
+        className="row pl-11"
         onSubmit={async (e) => {
           e.preventDefault();
           // transactionsQueryResult.refetch();
@@ -16,8 +16,8 @@ const Table = ({ children }: TableProps) => {
         {/* <Portal><div class="bg-black fixed left-0 top-0 overflow-auto w-full h-full bg-opacity-40 "><div class="bg-white ml-[25%] mr-[25%] mt-[25%] mb-[25%]">TEST</div></div></Portal> */}
         <table>
           <thead>
-            <tr>
-              <th>Date (DD/MM/YYYY)</th>
+            <tr className="h-14">
+              <th>Date(DD/MM/YYYY)</th>
               <th>Name</th>
               <th>Category</th>
               <th>Type</th>
@@ -34,7 +34,7 @@ const Table = ({ children }: TableProps) => {
             </tr>
           </tfoot>
         </table>
-        <button
+        {/* <button
           style={{
             visibility: "hidden",
             width: 0,
@@ -42,7 +42,7 @@ const Table = ({ children }: TableProps) => {
             position: "absolute",
           }}
           type="submit"
-        />{" "}
+        />{" "} */}
         {/* I need this here in order for the enter button to work */}
       </form>
     </>
