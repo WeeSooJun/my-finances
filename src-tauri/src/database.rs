@@ -243,7 +243,8 @@ pub fn add_new_transaction(new_transaction: Transaction, db: &mut Connection) ->
 pub fn get_transactions(
     db: &Connection,
     records_per_page: u32,
-    key: &str,
+    last_seen_date: &str,
+    last_seen_id: i32,
 ) -> Result<Vec<Transaction>, rusqlite::Error> {
     let mut stmt = db.prepare(
         "
@@ -260,7 +261,7 @@ pub fn get_transactions(
             LEFT JOIN bank b ON t.bank_id = b.id
             LEFT JOIN transaction_type_mapping ttm ON t.id = ttm.transaction_id
             LEFT JOIN transaction_type tt ON ttm.transaction_type_id = tt.id
-            WHERE t.date <= :key
+            WHERE t.date <= :last_seen_date AND t.id < :last_seen_id
             GROUP BY t.id
             ORDER BY t.date DESC, t.id DESC
             LIMIT :limit;
@@ -271,7 +272,8 @@ pub fn get_transactions(
     for row in stmt.query_map(
         &[
             (":limit", &records_per_page.to_string()),
-            (":key", &key.to_string()),
+            (":last_seen_date", &last_seen_date.to_string()),
+            (":last_seen_id", &last_seen_id.to_string()),
         ],
         |row| {
             Ok((

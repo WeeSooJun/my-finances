@@ -31,6 +31,7 @@ type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 export type NewTransaction = PartialBy<Transaction, "id">;
 
 const MAX_INITIAL_ITEMS = 10;
+const I32_MAX = 2_147_483_647;
 
 const Main = () => {
   const categoriesQueryResult = useQuery({
@@ -57,12 +58,22 @@ const Main = () => {
   const transactionsQueryResult = useInfiniteQuery({
     queryKey: ["transactionsData"],
     queryFn: async ({ pageParam }) => {
-      const response = await getTransactions(MAX_INITIAL_ITEMS, pageParam);
+      const response = await getTransactions(
+        MAX_INITIAL_ITEMS,
+        pageParam.date,
+        pageParam.id
+      );
       return response;
     },
-    initialPageParam: dayjs().format("YYYY-MM-DD"),
+    initialPageParam: {
+      date: dayjs().format("YYYY-MM-DD"),
+      id: I32_MAX,
+    },
     getNextPageParam: (lastPage, _allPages) => {
-      return lastPage[lastPage.length - 1].date.format("YYYY-MM-DD");
+      return {
+        date: lastPage[lastPage.length - 1].date.format("YYYY-MM-DD"),
+        id: lastPage[lastPage.length - 1].id,
+      };
     },
   });
 

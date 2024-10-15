@@ -93,11 +93,13 @@ type RawTransaction = {
 
 async function getTransactions(
   recordsPerPage: number,
-  key: string
+  lastSeenDate: string,
+  lastSeenId: number
 ): Promise<Transaction[]> {
   const result: RawTransaction[] = await invoke("get_transactions", {
     recordsPerPage,
-    key,
+    lastSeenDate,
+    lastSeenId,
   });
   // TODO: write a snake_case to camelCase converter and vice versa
   return result.map((raw) => ({
