@@ -7,7 +7,7 @@ const Table = ({ children }: TableProps) => {
   return (
     <>
       <form
-        className="row pl-11"
+        className="row pl-24"
         onSubmit={async (e) => {
           e.preventDefault();
           // transactionsQueryResult.refetch();
