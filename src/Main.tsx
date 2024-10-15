@@ -10,10 +10,11 @@ import {
 import dayjs, { Dayjs } from "dayjs";
 import { open } from "@tauri-apps/plugin-dialog";
 import Table from "./Table";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import NewFieldType from "./NewFieldType";
 import TableRow, { TableRowProps } from "./TableRow";
 import NewRowToggle from "./NewRowToggle";
+import React from "react";
 
 export type Transaction = {
   id: number;
@@ -53,16 +54,22 @@ const Main = () => {
       return response;
     },
   });
-  const transactionsQueryResult = useQuery({
+  const transactionsQueryResult = useInfiniteQuery({
     queryKey: ["transactionsData"],
-    queryFn: async () => {
-      const response = await getTransactions(
-        MAX_INITIAL_ITEMS,
-        dayjs().format("YYYY-MM-DD")
-      );
+    queryFn: async ({ pageParam }) => {
+      const response = await getTransactions(MAX_INITIAL_ITEMS, pageParam);
       return response;
     },
+    initialPageParam: dayjs().format("YYYY-MM-DD"),
+    getNextPageParam: (lastPage, _allPages) => {
+      return lastPage[lastPage.length - 1].date.format("YYYY-MM-DD");
+    },
   });
+
+  const getTransactionsNextPage = async () => {
+    await transactionsQueryResult.fetchNextPage();
+  };
+
   const onDeleteClick = async (id: number) => {
     // display popup to confirm delete
 
@@ -128,7 +135,7 @@ const Main = () => {
         </button>
       </div>
       <br />
-      <Table>
+      <Table onLoadMore={getTransactionsNextPage}>
         <NewRowToggle
           tableRow={(props: Partial<TableRowProps>) => (
             <TableRow
@@ -144,19 +151,23 @@ const Main = () => {
             />
           )}
         />
-        {transactionsQueryResult.data?.map((txn) => (
-          <TableRow
-            key={txn.id}
-            {...{
-              transactionInput: txn,
-              categoryList: categoriesQueryResult.data!,
-              transactionTypeOptionsList:
-                transactionTypeOptionsQueryResult.data!,
-              banksList: banksQueryResult.data!,
-              onTransactionSubmit,
-              onDeleteClick,
-            }}
-          />
+        {transactionsQueryResult.data?.pages.map((group, i) => (
+          <React.Fragment key={i}>
+            {group.map((txn) => (
+              <TableRow
+                key={txn.id}
+                {...{
+                  transactionInput: txn,
+                  categoryList: categoriesQueryResult.data!,
+                  transactionTypeOptionsList:
+                    transactionTypeOptionsQueryResult.data!,
+                  banksList: banksQueryResult.data!,
+                  onTransactionSubmit,
+                  onDeleteClick,
+                }}
+              />
+            ))}
+          </React.Fragment>
         ))}
       </Table>
     </div>

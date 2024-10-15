@@ -1,8 +1,10 @@
 import { PropsWithChildren } from "react";
 
-interface TableProps extends PropsWithChildren {}
+interface TableProps extends PropsWithChildren {
+  onLoadMore: () => void;
+}
 
-const Table = ({ children }: TableProps) => {
+const Table = ({ onLoadMore, children }: TableProps) => {
   // const [showDeleteModal, setDeleteModal] = createSignal<boolean>(false);
   return (
     <>
@@ -29,21 +31,13 @@ const Table = ({ children }: TableProps) => {
           <tfoot>
             <tr>
               <td colSpan={6}>
-                <button className="w-full">Load More</button>
+                <button className="w-full" onClick={onLoadMore}>
+                  Load More
+                </button>
               </td>
             </tr>
           </tfoot>
         </table>
-        {/* <button
-          style={{
-            visibility: "hidden",
-            width: 0,
-            height: 0,
-            position: "absolute",
-          }}
-          type="submit"
-        />{" "} */}
-        {/* I need this here in order for the enter button to work */}
       </form>
     </>
   );
