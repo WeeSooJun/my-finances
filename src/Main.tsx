@@ -61,7 +61,7 @@ const Main = () => {
       const response = await getTransactions(
         MAX_INITIAL_ITEMS,
         pageParam.date,
-        pageParam.id
+        pageParam.id,
       );
       return response;
     },
@@ -81,23 +81,23 @@ const Main = () => {
     await transactionsQueryResult.fetchNextPage();
   };
 
-  const onDeleteClick = async (id: number) => {
-    // display popup to confirm delete
+  // const onDeleteClick = async (id: number) => {
+  //   // display popup to confirm delete
 
-    await onDeleteSubmit(id);
-  };
+  //   await onDeleteSubmit(id);
+  // };
 
-  const onDeleteSubmit = async (id: number) => {
-    await deleteTransaction(id);
-    await transactionsQueryResult.refetch();
-  };
+  // const onDeleteSubmit = async (id: number) => {
+  //   await deleteTransaction(id);
+  //   await transactionsQueryResult.refetch();
+  // };
 
   const onTransactionSubmit = async () => {
     await transactionsQueryResult.refetch();
   };
 
   return (
-    <div className="flex flex-col justify-center text-center pt-10">
+    <div className="flex flex-col justify-center pt-10 text-center">
       <h1>My Finances!</h1>
       <div>
         <NewFieldType
@@ -156,7 +156,7 @@ const Main = () => {
                   transactionTypeOptionsQueryResult.data!,
                 banksList: banksQueryResult.data!,
                 onTransactionSubmit,
-                onDeleteClick,
+                // onDeleteClick,
               }}
               {...props}
             />
@@ -174,7 +174,7 @@ const Main = () => {
                     transactionTypeOptionsQueryResult.data!,
                   banksList: banksQueryResult.data!,
                   onTransactionSubmit,
-                  onDeleteClick,
+                  // onDeleteClick,
                 }}
               />
             ))}

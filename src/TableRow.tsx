@@ -7,7 +7,9 @@ import {
 } from "react";
 import { NewTransaction, Transaction } from "./Main";
 import dayjs, { Dayjs } from "dayjs";
-import { addNewTransaction, editTransaction } from "./api";
+import { addNewTransaction, deleteTransaction, editTransaction } from "./api";
+import Modal from "./Modal";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export interface TableRowProps {
   transactionInput?: Transaction;
@@ -22,7 +24,6 @@ export interface TableRowProps {
 
 const TableRow = ({
   transactionInput,
-  onDeleteClick,
   categoryList,
   transactionTypeOptionsList,
   banksList,
@@ -46,14 +47,28 @@ const TableRow = ({
   const [name, setName] = useState<string>(transaction.name);
   const [category, setCategory] = useState<string>(transaction.category);
   const [transactionTypes, setTransactionTypes] = useState<string[]>(
-    transaction.transactionTypes
+    transaction.transactionTypes,
   );
   const [bank, setBank] = useState<string>(transaction.bank);
   const [amount, setAmount] = useState<string | null>(
-    transaction.amount ? transaction.amount.toString() : null
+    transaction.amount ? transaction.amount.toString() : null,
   );
   const [isHover, setIsHover] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] =
+    useState<boolean>(false);
+
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: (id: number) => {
+      return deleteTransaction(id);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["transactionsData"] });
+      setIsDeleteModalVisible(false);
+    },
+  });
 
   const handleKeyPress = useCallback((event: KeyboardEvent) => {
     if (event.key === "Escape") {
@@ -76,6 +91,9 @@ const TableRow = ({
       document.removeEventListener("keydown", handleKeyPress);
     };
   }, [handleKeyPress]);
+  console.log(
+    `isPending: ${isPending}, time: ${dayjs().format("YYYY-MM-DDTHH:mm:ss")}`,
+  );
 
   // console.log(
   //   "test tablerow id" +
@@ -116,7 +134,7 @@ const TableRow = ({
                 // "rounded-lg border-solid border-transparent py-2.5 px-5" +
                 `${isHover ? "opacity-1" : "opacity-0"}`
               }
-              onClick={() => onDeleteClick!(transaction.id)}
+              onClick={() => setIsDeleteModalVisible(true)}
             >
               X
             </button>
@@ -177,10 +195,10 @@ const TableRow = ({
             >
               {categoryList.map(
                 (
-                  val // TODO: deal with loading states later
+                  val, // TODO: deal with loading states later
                 ) => (
                   <option key={val}>{val}</option>
-                )
+                ),
               )}
             </select>
           </td>
@@ -197,11 +215,11 @@ const TableRow = ({
                       onChange={(e) =>
                         e.target.checked
                           ? setTransactionTypes((prev) =>
-                              prev.concat([e.target.value])
+                              prev.concat([e.target.value]),
                             )
                           : setTransactionTypes((prev) => {
                               return prev.filter(
-                                (ele) => e.target.value !== ele
+                                (ele) => e.target.value !== ele,
                               );
                             })
                       }
@@ -216,10 +234,10 @@ const TableRow = ({
             <select value={bank} onChange={(e) => setBank(e.target.value)}>
               {banksList.map(
                 (
-                  val // TODO: deal with loading states later
+                  val, // TODO: deal with loading states later
                 ) => (
                   <option key={val}>{val}</option>
-                )
+                ),
               )}
             </select>
           </td>
@@ -232,6 +250,16 @@ const TableRow = ({
             />
           </td>
         </tr>
+      )}
+      {transactionInput && (
+        <Modal
+          isVisible={isDeleteModalVisible}
+          isLoading={isPending}
+          confirmAction={() => {
+            mutate(transactionInput.id);
+          }}
+          cancelAction={() => setIsDeleteModalVisible(false)}
+        />
       )}
     </>
   );
