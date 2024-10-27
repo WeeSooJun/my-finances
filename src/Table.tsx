@@ -30,7 +30,7 @@ const Table = ({ onLoadMore, children }: TableProps) => {
           <tbody>{children}</tbody>
           <tfoot>
             <tr>
-              <td colSpan={6}>
+              <td colSpan={6} className="border-none">
                 <button className="w-full" onClick={onLoadMore}>
                   Load More
                 </button>

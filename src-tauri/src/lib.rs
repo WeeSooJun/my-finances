@@ -7,12 +7,8 @@ mod util;
 
 use calamine::{open_workbook, RangeDeserializerBuilder, Reader, Xlsx};
 use chrono::NaiveDate;
-use core::time;
 use state::{AppState, ServiceAccess};
-use std::{
-    fs,
-    thread::{self, sleep},
-};
+use std::fs;
 use tauri::{AppHandle, Manager, State};
 use transaction::Transaction;
 use util::get_app_dir;
@@ -140,7 +136,6 @@ fn process_xlsx(app_handle: AppHandle, file_path: String) -> bool {
 
 #[tauri::command]
 async fn delete_transaction(app_handle: AppHandle, id: i64) -> bool {
-    thread::sleep(time::Duration::from_secs(3));
     match app_handle.db_mut(|db| database::delete_transaction_by_id(db, id)) {
         Ok(_) => true,
         Err(_) => false,

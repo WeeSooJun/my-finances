@@ -11,6 +11,8 @@ import { addNewTransaction, deleteTransaction, editTransaction } from "./api";
 import Modal from "./Modal";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+const MIN_WAIT_TIME = 750;
+
 export interface TableRowProps {
   transactionInput?: Transaction;
   onDeleteClick?: (id: number) => Promise<void>;
@@ -57,16 +59,15 @@ const TableRow = ({
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] =
     useState<boolean>(false);
+  const [hasMinWaitTimeElapsed, setHasMinWaitTimeElapsed] = useState<
+    boolean | null
+  >(null);
 
   const queryClient = useQueryClient();
 
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending, isSuccess } = useMutation({
     mutationFn: (id: number) => {
       return deleteTransaction(id);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["transactionsData"] });
-      setIsDeleteModalVisible(false);
     },
   });
 
@@ -91,16 +92,20 @@ const TableRow = ({
       document.removeEventListener("keydown", handleKeyPress);
     };
   }, [handleKeyPress]);
-  console.log(
-    `isPending: ${isPending}, time: ${dayjs().format("YYYY-MM-DDTHH:mm:ss")}`,
-  );
 
-  // console.log(
-  //   "test tablerow id" +
-  //     transaction.id +
-  //     " " +
-  //     dayjs().format("YYYY-MM-DDTHH:mm:ss")
-  // );
+  useEffect(() => {
+    if (isSuccess && hasMinWaitTimeElapsed) {
+      setHasMinWaitTimeElapsed(null);
+      setIsDeleteModalVisible(false);
+      queryClient.invalidateQueries({ queryKey: ["transactionsData"] });
+    }
+  }, [isSuccess, hasMinWaitTimeElapsed]);
+
+  // if (transactionInput?.id === 3636)
+  //   console.log(
+  //     `id: ${transactionInput?.id}, hasMinWaitTimeElapsed: ${hasMinWaitTimeElapsed}, time: ${dayjs().format("YYYY-MM-DDTHH:mm:ss")}`,
+  //   );
+
   return (
     <>
       {!isEdit && transactionInput !== undefined && (
@@ -254,9 +259,13 @@ const TableRow = ({
       {transactionInput && (
         <Modal
           isVisible={isDeleteModalVisible}
-          isLoading={isPending}
+          isLoading={isPending || hasMinWaitTimeElapsed === false}
           confirmAction={() => {
+            setHasMinWaitTimeElapsed(false);
             mutate(transactionInput.id);
+            setTimeout(() => {
+              setHasMinWaitTimeElapsed(true);
+            }, MIN_WAIT_TIME);
           }}
           cancelAction={() => setIsDeleteModalVisible(false)}
         />
