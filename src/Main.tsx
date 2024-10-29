@@ -5,7 +5,6 @@ import {
   getTypesForField,
   getTransactions,
   processXlsx,
-  deleteTransaction,
 } from "./api";
 import dayjs, { Dayjs } from "dayjs";
 import { open } from "@tauri-apps/plugin-dialog";
@@ -80,17 +79,6 @@ const Main = () => {
   const getTransactionsNextPage = async () => {
     await transactionsQueryResult.fetchNextPage();
   };
-
-  // const onDeleteClick = async (id: number) => {
-  //   // display popup to confirm delete
-
-  //   await onDeleteSubmit(id);
-  // };
-
-  // const onDeleteSubmit = async (id: number) => {
-  //   await deleteTransaction(id);
-  //   await transactionsQueryResult.refetch();
-  // };
 
   const onTransactionSubmit = async () => {
     await transactionsQueryResult.refetch();
