@@ -7,7 +7,7 @@ interface LoginProps {
 
 const Login = ({ setShowEnterPassword }: LoginProps) => {
   invoke("is_database_initialized").then((res: any) =>
-    setHasPasswordBeenSet(res as boolean)
+    setHasPasswordBeenSet(res as boolean),
   );
 
   async function setPassphrase(passphrase: string) {
@@ -20,7 +20,7 @@ const Login = ({ setShowEnterPassword }: LoginProps) => {
   }
   const [hasPasswordBeenSet, setHasPasswordBeenSet] = useState(true);
   const [showPasswordError, setShowPasswordError] = useState<string | null>(
-    null
+    null,
   );
   return (
     <>
@@ -29,10 +29,10 @@ const Login = ({ setShowEnterPassword }: LoginProps) => {
           e.preventDefault();
 
           const passwordInput = document.querySelector(
-            "#password"
+            "#password",
           ) as HTMLInputElement;
           const confirmPasswordInput = document.querySelector(
-            "#confirm-password"
+            "#confirm-password",
           ) as HTMLInputElement;
           if (
             !hasPasswordBeenSet &&
