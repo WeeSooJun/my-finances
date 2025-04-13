@@ -79,6 +79,7 @@ const TableRow = ({
       setCategory(transaction.category);
       setTransactionTypes(transaction.transactionTypes);
       setAmount(transaction.amount ? transaction.amount.toString() : null);
+      setBank(transaction.bank);
       setShowNewEntry && setShowNewEntry(false);
     }
   }, []);
