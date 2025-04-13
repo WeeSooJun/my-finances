@@ -12,6 +12,7 @@ import Modal from "./Modal";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const MIN_WAIT_TIME = 750;
+const TRANSACTION_TYPES_PER_PAGE = 5;
 
 export interface TableRowProps {
   transactionInput?: Transaction;
@@ -62,6 +63,7 @@ const TableRow = ({
   const [hasMinWaitTimeElapsed, setHasMinWaitTimeElapsed] = useState<
     boolean | null
   >(null);
+  const [transactionTypePage, setTransactionTypePage] = useState<number>(1);
 
   const queryClient = useQueryClient();
 
@@ -210,30 +212,51 @@ const TableRow = ({
           </td>
           <td>
             <div>
-              {transactionTypeOptionsList.map((val) => {
-                // TODO: deal with loading states later
-                return (
-                  <div key={val}>
-                    <input
-                      type="checkbox"
-                      value={val}
-                      checked={transactionTypes.includes(val)}
-                      onChange={(e) =>
-                        e.target.checked
-                          ? setTransactionTypes((prev) =>
-                              prev.concat([e.target.value]),
-                            )
-                          : setTransactionTypes((prev) => {
-                              return prev.filter(
-                                (ele) => e.target.value !== ele,
-                              );
-                            })
-                      }
-                    />
-                    <label htmlFor={val}>{val}</label>
-                  </div>
-                );
-              })}
+              {transactionTypeOptionsList
+                .slice(
+                  (transactionTypePage - 1) * TRANSACTION_TYPES_PER_PAGE,
+                  (transactionTypePage - 1) * TRANSACTION_TYPES_PER_PAGE +
+                    TRANSACTION_TYPES_PER_PAGE,
+                )
+                .map((val) => {
+                  // TODO: deal with loading states later
+                  return (
+                    <div key={val}>
+                      <input
+                        type="checkbox"
+                        value={val}
+                        checked={transactionTypes.includes(val)}
+                        onChange={(e) =>
+                          e.target.checked
+                            ? setTransactionTypes((prev) =>
+                                prev.concat([e.target.value]),
+                              )
+                            : setTransactionTypes((prev) => {
+                                return prev.filter(
+                                  (ele) => e.target.value !== ele,
+                                );
+                              })
+                        }
+                      />
+                      <label htmlFor={val}>{val}</label>
+                    </div>
+                  );
+                })}
+              {transactionTypePage > 1 && (
+                <button
+                  onClick={() => setTransactionTypePage((prev) => prev - 1)}
+                >
+                  &lt;
+                </button>
+              )}
+              {transactionTypePage <
+                Math.ceil(transactionTypeOptionsList.length / 5) && (
+                <button
+                  onClick={() => setTransactionTypePage((prev) => prev + 1)}
+                >
+                  &gt;
+                </button>
+              )}
             </div>
           </td>
           <td>
