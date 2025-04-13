@@ -151,6 +151,7 @@ const TableRow = ({
       )}
       {(isEdit || showNewEntry) && (
         <tr
+          className="h-[196px]"
           tabIndex={0}
           onKeyDown={async (event) => {
             if (event.key === "Enter") {
@@ -211,52 +212,59 @@ const TableRow = ({
             </select>
           </td>
           <td>
-            <div>
-              {transactionTypeOptionsList
-                .slice(
-                  (transactionTypePage - 1) * TRANSACTION_TYPES_PER_PAGE,
-                  (transactionTypePage - 1) * TRANSACTION_TYPES_PER_PAGE +
-                    TRANSACTION_TYPES_PER_PAGE,
-                )
-                .map((val) => {
-                  // TODO: deal with loading states later
-                  return (
-                    <div key={val}>
-                      <input
-                        type="checkbox"
-                        value={val}
-                        checked={transactionTypes.includes(val)}
-                        onChange={(e) =>
-                          e.target.checked
-                            ? setTransactionTypes((prev) =>
-                                prev.concat([e.target.value]),
-                              )
-                            : setTransactionTypes((prev) => {
-                                return prev.filter(
-                                  (ele) => e.target.value !== ele,
-                                );
-                              })
-                        }
-                      />
-                      <label htmlFor={val}>{val}</label>
-                    </div>
-                  );
-                })}
-              {transactionTypePage > 1 && (
-                <button
-                  onClick={() => setTransactionTypePage((prev) => prev - 1)}
-                >
-                  &lt;
-                </button>
-              )}
-              {transactionTypePage <
-                Math.ceil(transactionTypeOptionsList.length / 5) && (
-                <button
-                  onClick={() => setTransactionTypePage((prev) => prev + 1)}
-                >
-                  &gt;
-                </button>
-              )}
+            <div className="transaction-type h-[240px] w-[128px]">
+              <div className="h-[120px]">
+                {transactionTypeOptionsList
+                  .slice(
+                    (transactionTypePage - 1) * TRANSACTION_TYPES_PER_PAGE,
+                    (transactionTypePage - 1) * TRANSACTION_TYPES_PER_PAGE +
+                      TRANSACTION_TYPES_PER_PAGE,
+                  )
+                  .map((val) => {
+                    // TODO: deal with loading states later
+                    return (
+                      <div key={val}>
+                        <input
+                          type="checkbox"
+                          value={val}
+                          checked={transactionTypes.includes(val)}
+                          onChange={(e) =>
+                            e.target.checked
+                              ? setTransactionTypes((prev) =>
+                                  prev.concat([e.target.value]),
+                                )
+                              : setTransactionTypes((prev) => {
+                                  return prev.filter(
+                                    (ele) => e.target.value !== ele,
+                                  );
+                                })
+                          }
+                        />
+                        <label htmlFor={val}>{val}</label>
+                      </div>
+                    );
+                  })}
+              </div>
+              <div className="selected-types h-[72px]">
+                <b>selected: {transactionTypes.join(", ")}</b>
+              </div>
+              <div className="transaction-types-buttons">
+                {transactionTypePage > 1 && (
+                  <button
+                    onClick={() => setTransactionTypePage((prev) => prev - 1)}
+                  >
+                    &lt;
+                  </button>
+                )}
+                {transactionTypePage <
+                  Math.ceil(transactionTypeOptionsList.length / 5) && (
+                  <button
+                    onClick={() => setTransactionTypePage((prev) => prev + 1)}
+                  >
+                    &gt;
+                  </button>
+                )}
+              </div>
             </div>
           </td>
           <td>
