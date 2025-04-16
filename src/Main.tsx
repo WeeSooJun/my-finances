@@ -14,6 +14,7 @@ import NewFieldType from "./NewFieldType";
 import TableRow, { TableRowProps } from "./TableRow";
 import NewRowToggle from "./NewRowToggle";
 import React from "react";
+import Statistics from "./Statistics";
 
 export type Transaction = {
   id: number;
@@ -86,7 +87,8 @@ const Main = () => {
 
   return (
     <div className="flex flex-col justify-center pt-10 text-center">
-      <h1>My Finances!</h1>
+      <h1 className="bold text-4xl font-bold">My Finances!</h1>
+      <Statistics />
       <div>
         <NewFieldType
           fieldName="category"
