@@ -5,33 +5,38 @@ interface TableProps extends PropsWithChildren {
 }
 
 const Table = ({ onLoadMore, children }: TableProps) => {
-  // const [showDeleteModal, setDeleteModal] = createSignal<boolean>(false);
   return (
-    <>
+    <div className="w-full overflow-x-auto rounded-lg bg-gray-900 shadow-xl">
       <form
-        className="row pl-24"
+        className="w-full"
         onSubmit={async (e) => {
           e.preventDefault();
           // transactionsQueryResult.refetch();
         }}
       >
-        {/* <Portal><div class="bg-black fixed left-0 top-0 overflow-auto w-full h-full bg-opacity-40 "><div class="bg-white ml-[25%] mr-[25%] mt-[25%] mb-[25%]">TEST</div></div></Portal> */}
-        <table>
+        <table className="w-full border-collapse">
           <thead>
-            <tr className="h-14">
-              <th>Date(DD/MM/YYYY)</th>
-              <th>Name</th>
-              <th>Category</th>
-              <th>Type</th>
-              <th>Bank</th>
-              <th>Amount</th>
+            <tr className="border-b border-gray-700 bg-gray-800 text-left">
+              <th className="p-4 font-medium text-gray-300">Date</th>
+              <th className="p-4 font-medium text-gray-300">Name</th>
+              <th className="p-4 font-medium text-gray-300">Category</th>
+              <th className="p-4 font-medium text-gray-300">Type</th>
+              <th className="p-4 font-medium text-gray-300">Bank</th>
+              <th className="p-4 text-right font-medium text-gray-300">
+                Amount
+              </th>
+              {/* Action column header is transparent */}
+              <th className="border-none bg-transparent p-4 text-transparent"></th>
             </tr>
           </thead>
-          <tbody>{children}</tbody>
+          <tbody className="divide-y divide-gray-700">{children}</tbody>
           <tfoot>
             <tr>
-              <td colSpan={6} className="border-none">
-                <button className="w-full" onClick={onLoadMore}>
+              <td colSpan={7} className="border-none p-2">
+                <button
+                  className="w-full rounded-md bg-gray-800 p-3 text-gray-300 transition-colors hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  onClick={onLoadMore}
+                >
                   Load More
                 </button>
               </td>
@@ -39,7 +44,7 @@ const Table = ({ onLoadMore, children }: TableProps) => {
           </tfoot>
         </table>
       </form>
-    </>
+    </div>
   );
 };
 

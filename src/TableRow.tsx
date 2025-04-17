@@ -12,7 +12,7 @@ import Modal from "./Modal";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const MIN_WAIT_TIME = 750;
-const TRANSACTION_TYPES_PER_PAGE = 5;
+const TRANSACTION_TYPES_PER_PAGE = 4;
 
 export interface TableRowProps {
   transactionInput?: Transaction;
@@ -38,7 +38,7 @@ const TableRow = ({
   const transaction = transactionInput
     ? transactionInput
     : {
-        id: 0, // TODO: do something about this 0 later
+        id: 0,
         date: dayjs(),
         name: "",
         category: "",
@@ -87,10 +87,7 @@ const TableRow = ({
   }, []);
 
   useEffect(() => {
-    // attach the event listener
     document.addEventListener("keydown", handleKeyPress);
-
-    // remove the event listener
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
@@ -104,16 +101,16 @@ const TableRow = ({
     }
   }, [isSuccess, hasMinWaitTimeElapsed]);
 
-  // if (transactionInput?.id === 3636)
-  //   console.log(
-  //     `id: ${transactionInput?.id}, hasMinWaitTimeElapsed: ${hasMinWaitTimeElapsed}, time: ${dayjs().format("YYYY-MM-DDTHH:mm:ss")}`,
-  //   );
+  const inputClasses =
+    "w-full bg-gray-800 text-gray-200 rounded px-3 py-2 border border-gray-700 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500";
+  const selectClasses =
+    "w-full bg-gray-800 text-gray-200 rounded px-3 py-2 border border-gray-700 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500";
 
   return (
     <>
       {!isEdit && transactionInput !== undefined && (
         <tr
-          className="h-14"
+          className="text-gray-300 transition-colors hover:bg-gray-800"
           key={transactionInput.id ? transactionInput.id : 0}
           onMouseEnter={() => setIsHover(true)}
           onMouseLeave={() => setIsHover(false)}
@@ -128,30 +125,46 @@ const TableRow = ({
           }}
           tabIndex={0}
         >
-          <td>{date.format("DD/MM/YYYY")}</td>
-          <td>{name}</td>
-          <td>{category}</td>
-          <td>{transactionTypes.reduce((prev, curr) => `${prev}, ${curr}`)}</td>
-          <td>{bank}</td>
-          <td>{amount}</td>
-          <td className="border-none">
+          <td className="p-4">{date.format("DD/MM/YYYY")}</td>
+          <td className="p-4">{name}</td>
+          <td className="p-4">{category}</td>
+          <td className="p-4">{transactionTypes.join(", ")}</td>
+          <td className="p-4">{bank}</td>
+          <td className="p-4 text-right font-medium">
+            {parseFloat(amount || "0") < 0 ? (
+              <span className="text-red-400">{amount}</span>
+            ) : (
+              <span className="text-green-400">{amount}</span>
+            )}
+          </td>
+          {/* Delete button column with transparent background */}
+          <td className="w-16 border-none bg-transparent p-0">
             <button
               type="button"
-              // className="opacity-1"
-              className={
-                // "rounded-lg border-solid border-transparent py-2.5 px-5" +
-                `${isHover ? "opacity-1" : "opacity-0"}`
-              }
+              className={`rounded p-1 transition-all duration-200 ${
+                isHover ? "opacity-100" : "opacity-0"
+              } hover:bg-red-900 focus:opacity-100 focus:outline-none focus:ring-1 focus:ring-red-500`}
               onClick={() => setIsDeleteModalVisible(true)}
             >
-              X
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 text-red-400"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                  clipRule="evenodd"
+                />
+              </svg>
             </button>
           </td>
         </tr>
       )}
       {(isEdit || showNewEntry) && (
         <tr
-          className="h-[196px]"
+          className="bg-gray-800"
           tabIndex={0}
           onKeyDown={async (event) => {
             if (event.key === "Enter") {
@@ -183,37 +196,40 @@ const TableRow = ({
             }
           }}
         >
-          <td>
+          <td className="p-3">
             <input
               type="date"
               value={(date as Dayjs).format("YYYY-MM-DD")}
               onChange={(e) => setDate(dayjs(e.target.value))}
+              className={inputClasses}
             />
           </td>
-          <td>
+          <td className="p-3">
             <input
-              type="string"
+              type="text"
               value={name ? name : ""}
               onChange={(e) => setName(e.target.value)}
+              className={inputClasses}
+              placeholder="Transaction name"
             />
           </td>
-          <td>
+          <td className="p-3">
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
+              className={selectClasses}
             >
-              {categoryList.map(
-                (
-                  val, // TODO: deal with loading states later
-                ) => (
-                  <option key={val}>{val}</option>
-                ),
-              )}
+              <option value="" disabled>
+                Select category
+              </option>
+              {categoryList.map((val) => (
+                <option key={val}>{val}</option>
+              ))}
             </select>
           </td>
-          <td>
-            <div className="transaction-type h-[240px] w-[128px]">
-              <div className="h-[120px]">
+          <td className="p-3">
+            <div className="transaction-type h-[240px] max-w-[118px] rounded-lg border border-gray-700 bg-gray-900 p-3">
+              <div className="mb-3 h-[120px]">
                 {transactionTypeOptionsList
                   .slice(
                     (transactionTypePage - 1) * TRANSACTION_TYPES_PER_PAGE,
@@ -221,11 +237,11 @@ const TableRow = ({
                       TRANSACTION_TYPES_PER_PAGE,
                   )
                   .map((val) => {
-                    // TODO: deal with loading states later
                     return (
-                      <div key={val}>
+                      <div key={val} className="mb-2 flex items-center">
                         <input
                           type="checkbox"
+                          id={val}
                           value={val}
                           checked={transactionTypes.includes(val)}
                           onChange={(e) =>
@@ -239,52 +255,119 @@ const TableRow = ({
                                   );
                                 })
                           }
+                          className="h-4 w-4 rounded border-gray-600 bg-gray-700 text-blue-500 focus:ring-blue-500"
                         />
-                        <label htmlFor={val}>{val}</label>
+                        <label
+                          htmlFor={val}
+                          className="ml-2 text-sm text-gray-300"
+                        >
+                          {val}
+                        </label>
                       </div>
                     );
                   })}
               </div>
-              <div className="selected-types h-[72px]">
-                <b>selected: {transactionTypes.join(", ")}</b>
+              <div className="selected-types mb-2 rounded bg-gray-800 px-2 py-1 text-xs text-gray-300">
+                <span className="font-medium">Selected:</span>{" "}
+                {transactionTypes.length ? transactionTypes.join(", ") : "None"}
               </div>
-              <div className="transaction-types-buttons">
-                {transactionTypePage > 1 && (
-                  <button
-                    onClick={() => setTransactionTypePage((prev) => prev - 1)}
-                  >
-                    &lt;
-                  </button>
-                )}
-                {transactionTypePage <
-                  Math.ceil(transactionTypeOptionsList.length / 5) && (
-                  <button
-                    onClick={() => setTransactionTypePage((prev) => prev + 1)}
-                  >
-                    &gt;
-                  </button>
-                )}
+              <div className="transaction-types-buttons flex justify-between">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setTransactionTypePage((prev) => Math.max(prev - 1, 1))
+                  }
+                  disabled={transactionTypePage <= 1}
+                  className="rounded bg-gray-800 px-2 py-1 text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:opacity-50"
+                >
+                  &lt;
+                </button>
+                <span className="text-xs text-gray-400">
+                  Page {transactionTypePage}/
+                  {Math.max(
+                    1,
+                    Math.ceil(
+                      transactionTypeOptionsList.length /
+                        TRANSACTION_TYPES_PER_PAGE,
+                    ),
+                  )}
+                </span>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setTransactionTypePage((prev) =>
+                      Math.min(
+                        prev + 1,
+                        Math.ceil(
+                          transactionTypeOptionsList.length /
+                            TRANSACTION_TYPES_PER_PAGE,
+                        ),
+                      ),
+                    )
+                  }
+                  disabled={
+                    transactionTypePage >=
+                    Math.ceil(
+                      transactionTypeOptionsList.length /
+                        TRANSACTION_TYPES_PER_PAGE,
+                    )
+                  }
+                  className="rounded bg-gray-800 px-2 py-1 text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:opacity-50"
+                >
+                  &gt;
+                </button>
               </div>
             </div>
           </td>
-          <td>
-            <select value={bank} onChange={(e) => setBank(e.target.value)}>
-              {banksList.map(
-                (
-                  val, // TODO: deal with loading states later
-                ) => (
-                  <option key={val}>{val}</option>
-                ),
-              )}
+          <td className="p-3">
+            <select
+              value={bank}
+              onChange={(e) => setBank(e.target.value)}
+              className={selectClasses}
+            >
+              <option value="" disabled>
+                Select bank
+              </option>
+              {banksList.map((val) => (
+                <option key={val}>{val}</option>
+              ))}
             </select>
           </td>
-          <td>
+          <td className="p-3">
             <input
               onChange={(e) => {
                 setAmount(e.target.value);
               }}
               value={amount !== null ? amount : ""}
+              placeholder="0.00"
+              className={inputClasses}
+              type="number"
+              step="0.01"
             />
+          </td>
+          {/* Cancel button with transparent background */}
+          <td className="w-16 border-none bg-transparent p-3">
+            <button
+              type="button"
+              className="rounded p-1 text-gray-400 hover:bg-gray-700 hover:text-gray-200 focus:outline-none focus:ring-1 focus:ring-gray-500"
+              onClick={() => {
+                setIsEdit(false);
+                setShowNewEntry && setShowNewEntry(false);
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </button>
           </td>
         </tr>
       )}
