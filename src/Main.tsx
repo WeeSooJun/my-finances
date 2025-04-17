@@ -89,7 +89,7 @@ const Main = () => {
     <div className="min-h-screen bg-gray-900 px-4 text-gray-100 md:px-8">
       <div className="mx-auto max-w-7xl">
         <header className="py-10 text-center">
-          <h1 className="mb-8 text-4xl font-bold text-white">My Finances!</h1>
+          <h1 className="mb-8 text-4xl font-bold text-white">My Finances</h1>
           <Statistics />
         </header>
 

@@ -1,18 +1,18 @@
 import { DollarSign, TrendingDown } from "lucide-react";
 
-const StatisticsBox = () => {
-  const data = {
-    average: 87.5,
-    title: "Monthly Average Expense",
-    trend: "-12.3%",
-    period: "vs last month",
-    categories: [
-      { name: "Food", percentage: 35 },
-      { name: "Transport", percentage: 25 },
-      { name: "Shopping", percentage: 20 },
-      { name: "Others", percentage: 20 },
-    ],
-  };
+interface StatisticsBoxProps {
+  data: StatisticsBoxData;
+}
+
+interface StatisticsBoxData {
+  value: number;
+  title: string;
+  trend: string;
+  period: string;
+  categories: { name: string; percentage: number }[];
+}
+
+const StatisticsBox = ({ data }: StatisticsBoxProps) => {
   return (
     <div className="h-64 w-96 rounded-lg border border-gray-700 bg-gray-800 p-6 shadow-lg">
       <div className="mb-4 flex items-center justify-between">
@@ -26,7 +26,7 @@ const StatisticsBox = () => {
         <div className="mb-2 flex items-baseline">
           <span className="mr-2 text-sm text-gray-400">Average</span>
           <span className="text-3xl font-bold text-gray-100">
-            ${data.average.toFixed(2)}
+            ${data.value.toFixed(2)}
           </span>
         </div>
 

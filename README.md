@@ -1,4 +1,4 @@
-# My Finances!
+# My Finances
 
 ![sample image](sample.png)
 
