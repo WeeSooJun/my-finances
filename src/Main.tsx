@@ -86,91 +86,98 @@ const Main = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center pt-10 text-center">
-      <h1 className="text-4xl font-bold">My Finances!</h1>
-      <Statistics />
-      <div>
-        <NewFieldType
-          fieldName="category"
-          fieldSubmit={async (e) => {
-            addNewCategory(e);
-            await categoriesQueryResult.refetch();
-          }}
-        />
-        <NewFieldType
-          fieldName="transactionType"
-          fieldSubmit={async (e) => {
-            addNewTransactionType(e);
-            await transactionTypeOptionsQueryResult.refetch();
-          }}
-        />
-        <NewFieldType
-          fieldName="bank"
-          fieldSubmit={async (e) => {
-            addNewBank(e);
-            await banksQueryResult.refetch();
-          }}
-        />
-      </div>
-      <div>
-        <button
-          onClick={async () => {
-            const selectedFile = await open({
-              multiple: false,
-              filters: [
-                {
-                  name: "xlsx",
-                  extensions: ["xlsx"],
-                },
-              ],
-            });
-            if (selectedFile !== null && !Array.isArray(selectedFile)) {
-              await processXlsx(selectedFile);
-              await transactionsQueryResult.refetch();
-            } else {
-              console.error("Error trying to send file name to rust backend");
-            }
-          }}
-        >
-          Import .xlsx
-        </button>
-      </div>
-      <br />
-      <Table onLoadMore={getTransactionsNextPage}>
-        <NewRowToggle
-          tableRow={(props: Partial<TableRowProps>) => (
-            <TableRow
-              {...{
-                categoryList: categoriesQueryResult.data!,
-                transactionTypeOptionsList:
-                  transactionTypeOptionsQueryResult.data!,
-                banksList: banksQueryResult.data!,
-                onTransactionSubmit,
-                // onDeleteClick,
-              }}
-              {...props}
+    <div className="min-h-screen bg-gray-900 px-4 text-gray-100 md:px-8">
+      <div className="mx-auto max-w-7xl">
+        <header className="py-10 text-center">
+          <h1 className="mb-8 text-4xl font-bold text-white">My Finances!</h1>
+          <Statistics />
+        </header>
+
+        <div className="my-6 flex flex-row justify-center">
+          <NewFieldType
+            fieldName="category"
+            fieldSubmit={async (e) => {
+              addNewCategory(e);
+              await categoriesQueryResult.refetch();
+            }}
+          />
+          <NewFieldType
+            fieldName="transactionType"
+            fieldSubmit={async (e) => {
+              addNewTransactionType(e);
+              await transactionTypeOptionsQueryResult.refetch();
+            }}
+          />
+          <NewFieldType
+            fieldName="bank"
+            fieldSubmit={async (e) => {
+              addNewBank(e);
+              await banksQueryResult.refetch();
+            }}
+          />
+        </div>
+
+        <div className="my-6 flex justify-center">
+          <button
+            onClick={async () => {
+              const selectedFile = await open({
+                multiple: false,
+                filters: [
+                  {
+                    name: "xlsx",
+                    extensions: ["xlsx"],
+                  },
+                ],
+              });
+              if (selectedFile !== null && !Array.isArray(selectedFile)) {
+                await processXlsx(selectedFile);
+                await transactionsQueryResult.refetch();
+              } else {
+                console.error("Error trying to send file name to rust backend");
+              }
+            }}
+            className="rounded-md bg-gray-800 px-6 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-gray-700"
+          >
+            Import .xlsx
+          </button>
+        </div>
+
+        <div className="mb-12 mt-6 overflow-hidden rounded-lg border border-gray-800">
+          <Table onLoadMore={getTransactionsNextPage}>
+            <NewRowToggle
+              tableRow={(props: Partial<TableRowProps>) => (
+                <TableRow
+                  {...{
+                    categoryList: categoriesQueryResult.data!,
+                    transactionTypeOptionsList:
+                      transactionTypeOptionsQueryResult.data!,
+                    banksList: banksQueryResult.data!,
+                    onTransactionSubmit,
+                  }}
+                  {...props}
+                />
+              )}
             />
-          )}
-        />
-        {transactionsQueryResult.data?.pages.map((group, i) => (
-          <React.Fragment key={i}>
-            {group.map((txn) => (
-              <TableRow
-                key={txn.id}
-                {...{
-                  transactionInput: txn,
-                  categoryList: categoriesQueryResult.data!,
-                  transactionTypeOptionsList:
-                    transactionTypeOptionsQueryResult.data!,
-                  banksList: banksQueryResult.data!,
-                  onTransactionSubmit,
-                  // onDeleteClick,
-                }}
-              />
+            {transactionsQueryResult.data?.pages.map((group, i) => (
+              <React.Fragment key={i}>
+                {group.map((txn) => (
+                  <TableRow
+                    key={txn.id}
+                    {...{
+                      transactionInput: txn,
+                      categoryList: categoriesQueryResult.data!,
+                      transactionTypeOptionsList:
+                        transactionTypeOptionsQueryResult.data!,
+                      banksList: banksQueryResult.data!,
+                      onTransactionSubmit,
+                    }}
+                  />
+                ))}
+              </React.Fragment>
             ))}
-          </React.Fragment>
-        ))}
-      </Table>
+          </Table>
+        </div>
+      </div>
     </div>
   );
 };
