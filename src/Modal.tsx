@@ -19,13 +19,13 @@ const Modal = ({
     isVisible &&
     createPortal(
       <div
-        className={`fixed left-0 top-0 z-10 flex h-full w-full justify-center overflow-auto bg-black/70 align-middle ${isVisible ? "!translate-y-full !opacity-100" : "-translate-y-full opacity-0"}`}
+        className={`fixed left-0 top-0 z-10 flex h-full w-full justify-center overflow-auto bg-black/70 align-middle ${isVisible ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
       >
         <div className="relative m-auto text-black">
           {!isLoading && (
             <div className="rounded-lg border-2 bg-white pb-2 pl-4 pr-4 pt-2">
-              <h1 className="text-left">Confirm Delete?</h1>
-              <h3 className="text-red-500">
+              <h1 className="text-left text-3xl font-bold">Confirm Delete?</h1>
+              <h3 className="text-lg font-bold text-red-500">
                 Note: this action is NOT REVERSIBLE
               </h3>
               <button onClick={confirmAction}>Confirm</button>

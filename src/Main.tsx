@@ -87,7 +87,7 @@ const Main = () => {
 
   return (
     <div className="flex flex-col justify-center pt-10 text-center">
-      <h1 className="bold text-4xl font-bold">My Finances!</h1>
+      <h1 className="text-4xl font-bold">My Finances!</h1>
       <Statistics />
       <div>
         <NewFieldType
