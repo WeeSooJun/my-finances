@@ -12,7 +12,7 @@ const NewRowToggle = ({ tableRow }: NewRowToggleProps) => {
     <>
       {showNewEntry && tableRowElement}
       {!showNewEntry && (
-        <tr className="h-14" onClick={() => setShowNewEntry(true)}>
+        <tr className="h-14 text-center" onClick={() => setShowNewEntry(true)}>
           <td colSpan={6}>add new row</td>
         </tr>
       )}

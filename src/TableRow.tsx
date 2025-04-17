@@ -110,7 +110,7 @@ const TableRow = ({
     <>
       {!isEdit && transactionInput !== undefined && (
         <tr
-          className="text-gray-300 transition-colors hover:bg-gray-800"
+          className="border-none text-gray-300 transition-colors hover:bg-gray-800"
           key={transactionInput.id ? transactionInput.id : 0}
           onMouseEnter={() => setIsHover(true)}
           onMouseLeave={() => setIsHover(false)}
@@ -138,7 +138,7 @@ const TableRow = ({
             )}
           </td>
           {/* Delete button column with transparent background */}
-          <td className="w-16 border-none bg-transparent p-0">
+          <td className="w-16 border-none bg-transparent p-0 text-center">
             <button
               type="button"
               className={`rounded p-1 transition-all duration-200 ${

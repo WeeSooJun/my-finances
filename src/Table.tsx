@@ -14,9 +14,9 @@ const Table = ({ onLoadMore, children }: TableProps) => {
           // transactionsQueryResult.refetch();
         }}
       >
-        <table className="w-full border-collapse">
+        <table className="w-full border-none">
           <thead>
-            <tr className="border-b border-gray-700 bg-gray-800 text-left">
+            <tr className="border-none border-gray-700 bg-gray-800 text-left">
               <th className="p-4 font-medium text-gray-300">Date</th>
               <th className="p-4 font-medium text-gray-300">Name</th>
               <th className="p-4 font-medium text-gray-300">Category</th>
@@ -26,7 +26,9 @@ const Table = ({ onLoadMore, children }: TableProps) => {
                 Amount
               </th>
               {/* Action column header is transparent */}
-              <th className="border-none bg-transparent p-4 text-transparent"></th>
+              <th className="border-none bg-transparent p-4 font-medium text-gray-300">
+                Delete?
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-700">{children}</tbody>
